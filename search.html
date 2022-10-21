@@ -1,0 +1,91 @@
+<html>
+    <head>
+       <script type="module" src=""></script>
+       <title>Search Engine</title>
+    </head>
+</html>
+<body>
+    <h1 id="title">Flickr Images</h1>
+    <input type="text" id="myInput"  placeholder="What are you looking for?">
+    <button onClick="Search()"  id="search">Search</button>
+    <div id="images">
+
+    </div>
+
+    <style>
+        #title{
+            position: absolute;
+            left:550px;
+            font-style: italic;
+            font-size: 40px;
+            color:rgb(97, 60, 97);;
+        }
+        #myInput {
+            width:400px;
+            height: 40px;
+            border-radius: 10px;
+            border-color: thistle;
+            position:absolute;
+            left:400px;
+            top:100px;
+        }
+        
+        #search{
+            width:100px;
+            height: 40px;
+            border-radius: 10px;
+            border-style: none;
+            font-size: 18px;
+            background-color: rgb(233, 178, 233);
+            position:absolute;
+            left:810px;
+            top:100px;
+        }
+        #search:hover{
+            border-style: solid;
+            box-shadow: 1px 2px 1px;
+            
+        }
+        #images{
+            position: absolute;
+            top: 200px;
+            width:1200px;
+            left: 100px;
+        }
+    </style>
+        
+    <script>
+        
+        function Search(){
+            let query=document.getElementById("myInput").value
+            
+            if(query){
+                    
+                    fetch( `http://localhost:3000/search?query=${query}`).then((result)=>{
+
+                        return result.json()
+                    }).then((data)=>{
+                        console.log(data.length)
+                        document.getElementById('images').replaceChildren();
+                        for(let i=0 ; i<data.length ; i++){
+                            
+                            let image=new Image(300,250)
+                            let flickr_farm=data[i]._source.flickr_farm
+                            let flickr_server=data[i]._source.flickr_server
+                            let id=data[i]._source.id
+                            let flickr_secret=data[i]._source.flickr_secret
+                            image.src="http://farm"+flickr_farm+".staticflickr.com/"+flickr_server+"/"+id+"_"+flickr_secret+".jpg"
+                            image.alt='new image'
+                            document.getElementById('images').appendChild(image)
+                        }
+
+                       
+                    }).catch((err)=>{
+                    return err
+                })
+            }
+            
+        }
+        
+    </script>
+</body>
